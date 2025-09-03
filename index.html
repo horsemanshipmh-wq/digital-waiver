@@ -1,135 +1,77 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Liability Waiver & Indemnity Agreement</title>
-  https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js
-  https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js
+  <meta charset="UTF-8">
+  <title>Digital Waiver Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    canvas { border: 1px solid #000; width: 100%; height: 200px; touch-action: none; }
-    label, input, select { display: block; margin-top: 10px; width: 100%; }
-    button { margin-top: 20px; padding: 10px 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 600px;
+    }
+    canvas {
+      border: 1px solid #000;
+      width: 100%;
+      height: 200px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, button {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>Liability Waiver & Indemnity Agreement</h2>
-  <p><strong>IMPORTANT NOTICE:</strong><br>
-  Horse riding and related equestrian activities involve inherent risks. By signing this agreement, you acknowledge and accept these risks on behalf of yourself and/or your minor child. You also waive certain legal rights. Please read carefully.</p>
+  <h2>Digital Waiver Agreement</h2>
+  <p>By signing below, you agree to the terms and conditions outlined in this waiver. This includes acknowledging the risks and responsibilities associated with the activity or service provided.</p>
 
   <form id="waiverForm">
-    <label>Participant Name</label>
-    <input type="text" name="participant_name" required>
+    <label for="name">Name:</label><br>
+    <input type="text" name="name" required><br>
 
-    <label>Date of Birth</label>
-    <input type="date" name="dob" required>
+    <label for="email">Email:</label><br>
+    <input type="email" name="email" required><br>
 
-    <label>Parent/Guardian’s Name (if under 18)</label>
-    <input type="text" name="guardian_name">
+    <label for="signature">Signature:</label><br>
+    <canvas id="signatureCanvas"></canvas><br>
+    <button type="button" onclick="clearSignature()">Clear Signature</button><br>
 
-    <label>Residential Address</label>
-    <input type="text" name="address" required>
-
-    <label>City</label>
-    <input type="text" name="city" required>
-
-    <label>State / Province</label>
-    <input type="text" name="state" required>
-
-    <label>Postal / Zip Code</label>
-    <input type="text" name="zip" required>
-
-    <label>Emergency Contact Name</label>
-    <input type="text" name="emergency_name" required>
-
-    <label>Emergency Contact Phone Number</label>
-    <input type="tel" name="emergency_phone" required>
-
-    <label>Photo & Media Consent</label>
-    <select name="media_consent" required>
-      <option value="">--Please Select--</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-
-    <label>Participant’s Signature (if older than 18)</label>
-    <canvas id="participantCanvas"></canvas>
-    <button type="button" onclick="participantPad.clear()">Clear Signature</button>
-
-    <label>Date</label>
-    <input type="date" name="participant_date">
-
-    <label>Parent/Guardian’s Signature (if under 18)</label>
-    <canvas id="guardianCanvas"></canvas>
-    <button type="button" onclick="guardianPad.clear()">Clear Guardian Signature</button>
-
-    <label>Date</label>
-    <input type="date" name="guardian_date">
-
-    <button type="submit">Download PDF</button>
+    <button type="submit">Submit Waiver</button>
   </form>
 
   <script>
-    const participantCanvas = document.getElementById('participantCanvas');
-    const guardianCanvas = document.getElementById('guardianCanvas');
+    const canvas = document.getElementById('signatureCanvas');
+    const signaturePad = new SignaturePad(canvas);
 
-    function resizeCanvas(canvas) {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
+    function clearSignature() {
+      signaturePad.clear();
     }
-
-    resizeCanvas(participantCanvas);
-    resizeCanvas(guardianCanvas);
-
-    const participantPad = new SignaturePad(participantCanvas);
-    const guardianPad = new SignaturePad(guardianCanvas);
 
     document.getElementById('waiverForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const form = e.target;
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      let y = 10;
-      doc.setFontSize(12);
-      doc.text("Liability Waiver & Indemnity Agreement", 10, y); y += 10;
-
-      const fields = [
-        ["Participant Name", form.participant_name.value],
-        ["Date of Birth", form.dob.value],
-        ["Parent/Guardian’s Name", form.guardian_name.value],
-        ["Residential Address", form.address.value],
-        ["City", form.city.value],
-        ["State / Province", form.state.value],
-        ["Postal / Zip Code", form.zip.value],
-        ["Emergency Contact Name", form.emergency_name.value],
-        ["Emergency Contact Phone Number", form.emergency_phone.value],
-        ["Photo & Media Consent", form.media_consent.value],
-        ["Participant Date", form.participant_date.value],
-        ["Guardian Date", form.guardian_date.value]
-      ];
-
-      fields.forEach(([label, value]) => {
-        doc.text(`${label}: ${value}`, 10, y);
-        y += 10;
-      });
-
-      if (!participantPad.isEmpty()) {
-        const imgData = participantPad.toDataURL();
-        doc.text("Participant Signature:", 10, y); y += 5;
-        doc.addImage(imgData, 'PNG', 10, y, 60, 30); y += 35;
+      if (signaturePad.isEmpty()) {
+        alert("Please provide a signature.");
+        return;
       }
 
-      if (!guardianPad.isEmpty()) {
-        const imgData = guardianPad.toDataURL();
-        doc.text("Guardian Signature:", 10, y); y += 5;
-        doc.addImage(imgData, 'PNG', 10, y, 60, 30); y += 35;
-      }
+      const data = {
+        name: this.name.value,
+        email: this.email.value,
+        signature: signaturePad.toDataURL()
+      };
 
-      doc.save("waiver_submission.pdf");
+      console.log("Form Data:", data);
+      alert("Waiver submitted successfully!");
     });
   </script>
 </body>
