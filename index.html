@@ -2,77 +2,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>Digital Waiver Form</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      max-width: 600px;
-    }
-    canvas {
-      border: 1px solid #000;
-      width: 100%;
-      height: 200px;
-    }
-    label {
-      font-weight: bold;
-    }
-    input, button {
-      margin-top: 10px;
-      margin-bottom: 20px;
-      width: 100%;
-      padding: 8px;
-      font-size: 16px;
-    }
-    button {
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    canvas { border: 1px solid #000; width: 100%; height: 200px; }
+    .form-section { margin-bottom: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { padding: 10px 20px; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <h2>Digital Waiver Agreement</h2>
-  <p>By signing below, you agree to the terms and conditions outlined in this waiver. This includes acknowledging the risks and responsibilities associated with the activity or service provided.</p>
+  <h2>Liability Waiver & Indemnity Agreement</h2>
+  <p>IMPORTANT NOTICE:<br>
+  Horse riding and related equestrian activities involve inherent risks. By signing this agreement, you acknowledge and accept these risks on behalf of yourself and/or your minor child. You also waive certain legal rights. Please read carefully.<br>
+  1. Acknowledgement of Risk<br>
+  I, the undersigned, understand that participation in horse riding, horse riding lessons, and related equestrian activities (“the Activity”) is inherently hazardous. I voluntarily assume all risks of bodily injury, death, or property damage associated with this Activity.
+  I acknowledge that serious injury or death may result from equestrian activities. Harties Party Ponies LLC and Molly Dippenaar do not guarantee the safety of participants, horses, or any individuals involved.<br>
+  2. Waiver and Release of Liability<br>
+  In consideration of being permitted to participate in the Activity, I hereby:
+  - Waive, release, and discharge Harties Party Ponies LLC, Molly Dippenaar, and all associated parties (“Released Parties”) from any and all claims, demands, causes of action, costs (including attorney’s fees), injuries, damages, or death arising from participation in the Activity.
+  - Covenant not to sue the Released Parties for any claims of negligence or liability.
+  - Extend this waiver to any property owners or lessors where the Activity takes place, including their affiliates and representatives.<br>
+  3. Assumption of Risk<br>
+  I understand and accept the risks involved, including but not limited to:
+  - Unpredictable behavior of horses, mules, or miniature horses (e.g., bucking, biting, kicking, stumbling, rearing)
+  - Equipment failure (e.g., saddles or bridles breaking or loosening)
+  - Injuries from falling, being stepped on, or jolted
+  - Risks associated with not wearing protective gear
+  I voluntarily assume these risks for myself and/or my child.<br>
+  4. Indemnity Agreement<br>
+  I agree to defend, indemnify, and hold harmless the Released Parties from any loss, liability, damage, or cost arising from my or my child’s participation in the Activity.<br>
+  5. Medical Consent<br>
+  In the event of a medical emergency, I authorize Harties Party Ponies LLC, Molly Dippenaar, and their representatives to obtain prompt medical attention for myself and/or my child. I release them from any liability related to securing such care.<br>
+  6. Legal Jurisdiction<br>
+  This agreement is governed by the laws of the Republic of South Africa. If any portion of this agreement is found to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.<br?
+  7. Photo & Media Consent<br>
+  Harties Party Ponies occasionally captures photos and videos during events for promotional use on social media, websites, and printed materials. Please indicate your preference below:
+  Do you grant permission for Harties Party Ponies to use photos/videos of you and/or your child for promotional purposes?
+  If permission is granted, Harties Party Ponies may use the media in a respectful and family-friendly manner, without compensation, and without further notice.<br>
+
+
+</p>
 
   <form id="waiverForm">
-    <label for="name">Name:</label><br>
-    <input type="text" name="name" required><br>
+    <div class="form-section">
+      <label>Participant Name</label>
+      <input type="text" name="participantName" required>
+      <label>Date of Birth</label>
+      <input type="date" name="dob" required>
+      <label>Parent/Guardian Name (if under 18)</label>
+      <input type="text" name="guardianName">
+      <label>Residential Address</label>
+      <input type="text" name="address" required>
+      <label>City</label>
+      <input type="text" name="city" required>
+      <label>State / Province</label>
+      <input type="text" name="state" required>
+      <label>Postal / Zip Code</label>
+      <input type="text" name="zip" required>
+      <label>Emergency Contact Name</label>
+      <input type="text" name="emergencyName" required>
+      <label>Emergency Contact Phone Number</label>
+      <input type="tel" name="emergencyPhone" required>
+      <label>Photo & Media Consent</label>
+      <select name="mediaConsent" required>
+        <option value="">--Please Select--</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
 
-    <label for="email">Email:</label><br>
-    <input type="email" name="email" required><br>
+    <div class="form-section">
+      <label>Participant’s Signature (if older than 18)</label>
+      <canvas id="participantSignature"></canvas>
+      <button type="button" onclick="clearSignature(participantPad)">Clear Signature</button>
+      <label>Date</label>
+      <input type="date" name="participantDate">
+    </div>
 
-    <label for="signature">Signature:</label><br>
-    <canvas id="signatureCanvas"></canvas><br>
-    <button type="button" onclick="clearSignature()">Clear Signature</button><br>
+    <div class="form-section">
+      <label>Parent/Guardian’s Signature (if under 18)</label>
+      <canvas id="guardianSignature"></canvas>
+      <button type="button" onclick="clearSignature(guardianPad)">Clear Signature</button>
+      <label>Date</label>
+      <input type="date" name="guardianDate">
+    </div>
 
-    <button type="submit">Submit Waiver</button>
+    <button type="submit">Submit & Download PDF</button>
   </form>
 
   <script>
-    const canvas = document.getElementById('signatureCanvas');
-    const signaturePad = new SignaturePad(canvas);
+    const participantPad = new SignaturePad(document.getElementById('participantSignature'));
+    const guardianPad = new SignaturePad(document.getElementById('guardianSignature'));
 
-    function clearSignature() {
-      signaturePad.clear();
+    function clearSignature(pad) {
+      pad.clear();
     }
 
     document.getElementById('waiverForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      if (signaturePad.isEmpty()) {
-        alert("Please provide a signature.");
-        return;
+
+      const form = e.target;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 10;
+      doc.setFontSize(12);
+      doc.text("Liability Waiver & Indemnity Agreement", 10, y); y += 10;
+
+      const fields = [
+        ["Participant Name", form.participantName.value],
+        ["Date of Birth", form.dob.value],
+        ["Parent/Guardian Name", form.guardianName.value],
+        ["Residential Address", form.address.value],
+        ["City", form.city.value],
+        ["State / Province", form.state.value],
+        ["Postal / Zip Code", form.zip.value],
+        ["Emergency Contact Name", form.emergencyName.value],
+        ["Emergency Contact Phone Number", form.emergencyPhone.value],
+        ["Photo & Media Consent", form.mediaConsent.value],
+        ["Participant Signature Date", form.participantDate.value],
+        ["Guardian Signature Date", form.guardianDate.value]
+      ];
+
+      fields.forEach(([label, value]) => {
+        doc.text(`${label}: ${value}`, 10, y);
+        y += 10;
+      });
+
+      if (!participantPad.isEmpty()) {
+        const imgData = participantPad.toDataURL();
+        doc.text("Participant Signature:", 10, y); y += 5;
+        doc.addImage(imgData, 'PNG', 10, y, 60, 30); y += 35;
       }
 
-      const data = {
-        name: this.name.value,
-        email: this.email.value,
-        signature: signaturePad.toDataURL()
-      };
+      if (!guardianPad.isEmpty()) {
+        const imgData = guardianPad.toDataURL();
+        doc.text("Guardian Signature:", 10, y); y += 5;
+        doc.addImage(imgData, 'PNG', 10, y, 60, 30); y += 35;
+      }
 
-      console.log("Form Data:", data);
-      alert("Waiver submitted successfully!");
+      doc.save("waiver_submission.pdf");
     });
   </script>
 </body>
 </html>
+
