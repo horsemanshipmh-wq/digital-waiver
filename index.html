@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Liability Waiver & Indemnity Agreement</title>
-  https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js
-  https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     canvas { border: 1px solid #000; width: 100%; height: 200px; touch-action: none; }
@@ -13,8 +12,7 @@
     button { margin-top: 20px; padding: 10px 20px; }
   </style>
 </head>
-<body>
-  <h2>Liability Waiver & Indemnity Agreement</h2>
+<body  <h2>Liability Waiver & Indemnity Agreement</h2>
   <p><strong>IMPORTANT NOTICE:</strong><br>
   Horse riding and related equestrian activities involve inherent risks. By signing this agreement, you acknowledge and accept these risks on behalf of yourself and/or your minor child. You also waive certain legal rights. Please read carefully.</p>
 
@@ -82,10 +80,9 @@
       canvas.getContext("2d").scale(ratio, ratio);
     }
 
-    resizeCanvas(participantCanvas);
-    resizeCanvas(guardianCanvas);
+    resizeCanvas(participant    resizeCanvas(guardianCanvas);
 
-    new SignaturePad(participantCanvas);
+    const participantPad = new SignaturePad(participantCanvas);
     const guardianPad = new SignaturePad(guardianCanvas);
 
     document.getElementById('waiverForm').addEventListener('submit', function(e) {
@@ -98,7 +95,7 @@
       doc.setFontSize(12);
       doc.text("Liability Waiver & Indemnity Agreement", 10, y); y += 10;
 
-      const fields = [
+      fields = [
         ["Participant Name", form.participant_name.value],
         ["Date of Birth", form.dob.value],
         ["Parent/Guardian’s Name", form.guardian_name.value],
